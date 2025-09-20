@@ -1,0 +1,16 @@
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  .form-field-half {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 200px;
+  }
+}

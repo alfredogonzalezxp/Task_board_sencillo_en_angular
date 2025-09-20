@@ -1,0 +1,57 @@
+
+
+<div class="board-header">
+  <h2>Mi Tablero de Tareas</h2>
+</div>
+<hr class="linea">
+
+<!----
+<div class="fix-grid-1-3 gap-4 p-4 border">
+  <div class="p-4 bg-slate-100 border">A</div>
+  <div class="p-4 bg-slate-100 border">B</div>
+  <div class="p-4 bg-slate-100 border">C</div>
+</div> --->
+
+<!-- Panel de filtros con Tailwind CSS -->
+<div class="fix-grid-1-3 items-start justify-items-center gap-[20px] md:gap-0 padding-8">
+  <div class="flex justify-start h-10 md:justify-self-start">
+    <input
+        type="text"
+        placeholder="Buscar por título"
+        class="h-10 px-3 md:gap-4"
+        (input)="onSearch($event)"
+        aria-label="Buscar por título"
+      />
+  </div>
+  <div class="flex justify-center md:justify-self-start">
+      <mat-form-field appearance="outline" class="h-10 px-3">
+        <mat-label>Filtrar por etiqueta</mat-label>
+        <mat-select (selectionChange)="onFilterByTag($event.value)" multiple>
+          @for (tag of allTags(); track tag) {
+            <mat-option [value]="tag">{{ tag }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+ </div>
+  <div class="flex justify-end h-10 px-4 md:justify-self-start">
+         <button mat-flat-button color="primary"
+              class="md:w-auto h-12 px-4"
+              (click)="openTaskDialog()" aria-label="Crear nueva tarea">
+        <mat-icon>add</mat-icon>
+        <span class="ml-2">Nueva Tarea</span>
+      </button>
+   </div>
+</div>
+  
+<div cdkDropListGroup class="board-container">
+  @for (column of columns; track column) {
+    <div class="flex flex-col rounded-xl p-4 border-2 transition-shadow hover:shadow-lg bg-surface-container-low border-outline-variant" [ngClass]="'column-' + column.toLowerCase().replaceAll(' ', '-')">
+      <h3>{{ column }}</h3>
+      <div cdkDropList [id]="column.toLowerCase().replaceAll(' ', '-')" [attr.data-column-name]="column" [cdkDropListData]="filteredTasks()[column]" class="task-list" (cdkDropListDropped)="drop($event)">
+        @for (task of filteredTasks()[column]; track task.id) {
+          <app-task-card cdkDrag [task]="task" (click)="openTaskDialog(task)"></app-task-card>
+        }
+      </div>
+    </div>
+  }
+</div>

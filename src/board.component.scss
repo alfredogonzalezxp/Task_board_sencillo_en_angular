@@ -1,0 +1,174 @@
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+
+
+  h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+}
+
+$line-color: #000000;
+$line-thickness: 1px;
+
+.linea {
+  border: 1px;
+  border-top: $line-thickness solid $line-color;
+  padding: 4px;
+}
+.board-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  min-height: 60vh;
+}
+
+// Vamos a usar .task-column para evitar conflictos con Tailwind CSS
+
+
+  h3 {
+    margin: 0 0 16px;
+    padding-top: 8px;
+    border-top: 4px solid var(--mat-sys-primary);
+    border-radius: 4px;
+    color: var(--mat-sys-primary);
+  }
+
+// Estilos específicos para cada columna
+.column-to-do h3 {
+  // Un color azul para "To Do"
+  border-top-color: #1e88e5; // Azul
+  color: #1e88e5;
+  background-color: rgb(151, 222, 255);
+}
+
+.column-in-progress h3 {
+  // Un color naranja para "In Progress"
+  border-top-color: #fb8c00; // Naranja
+  color: #fb8c00;
+  background-color: rgb(255, 221, 158);
+}
+
+.column-done h3 {
+  // Un color verde para "Done"
+  border-top-color: #43a047; // Verde
+  color: #43a047;
+  background-color: rgb(219, 255, 179);
+}
+
+
+$from: #dff7fc; // 
+$to:   #9fe5f7; // 
+
+.task-list {
+  flex-grow: 1;
+  min-height: 200px;
+  border-radius: 4px;
+  //background-color:rgb(231, 248, 243); //var(--mat-sys-surface-container);
+  transition: background-color 0.3s ease;
+//  background-image: linear-gradient(90deg, $from, $to);
+
+  
+}
+
+
+
+.cdk-drop-list-dragging .task-list {
+  background-color: var(--mat-sys-surface-container-highest);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0 !important;
+}
+
+// Estilos para cuando la tarjeta se está arrastrando
+// Se mueven aquí desde task-card.component.scss para que se apliquen globalmente
+// a los elementos que crea el CDK fuera del componente.
+.cdk-drag-preview .task-card {
+  box-shadow: var(--mat-elevation-z5);
+  transform: rotate(3deg);
+  cursor: grabbing;
+}
+
+.cdk-drop-list-dragging .cdk-drag-placeholder .task-card {
+  background-color: var(--mat-sys-surface-container-highest);
+  border-color: var(--mat-sys-primary);
+  border-style: dashed;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  * {
+    opacity: 0;
+  }
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+/*
+.board-header: Da estilo al encabezado del tablero, donde está el título "Mi Tablero de Tareas". Usa flexbox para alinear los elementos.
+.linea: Define una línea horizontal simple para separar el encabezado del resto del contenido.
+.board-container: Este es el contenedor principal de las columnas. Utiliza CSS Grid para crear un diseño responsivo. La regla repeat(auto-fit, minmax(300px, 1fr)) es muy potente: crea tantas columnas de 300px como quepan en la pantalla y luego las estira para que ocupen todo el espacio disponible.
+2. Estilos de las Columnas
+scss
+ Show full code block 
+h3 {
+  margin: 0 0 16px;
+  padding-top: 8px;
+  border-top: 4px solid var(--mat-sys-primary);
+  // ...
+}
+
+.column-to-do h3 {
+  border-top-color: #1e88e5; // Azul
+  color: #1e88e5;
+  background-color: rgb(151, 222, 255);
+}
+
+// ... (estilos similares para .column-in-progress y .column-done)
+h3: Define el estilo base para los títulos de todas las columnas (ej. "To Do", "In Progress"). Les añade un borde superior que funciona como un acento de color.
+.column-to-do h3, .column-in-progress h3, etc.: Estas reglas sobrescriben los estilos base para cada columna específica, dándole a cada una un color de borde, de texto y de fondo únicos. Así es como logras que cada columna tenga su propia identidad visual.
+3. Estilos de Arrastrar y Soltar (Drag and Drop)
+Esta es la sección más importante para la interactividad. Utiliza clases especiales que el CDK (Component Development Kit) de Angular añade y quita dinámicamente.
+
+scss
+ Show full code block 
+// Estilo para la vista previa de la tarjeta que se arrastra
+.cdk-drag-preview .task-card {
+  box-shadow: var(--mat-elevation-z5);
+  transform: rotate(3deg);
+  cursor: grabbing;
+}
+
+// Estilo para el espacio vacío que ocupa la tarjeta
+.cdk-drop-list-dragging .cdk-drag-placeholder .task-card {
+  background-color: var(--mat-sys-surface-container-highest);
+  border-color: var(--mat-sys-primary);
+  border-style: dashed;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  * {
+    opacity: 0;
+  }
+}
+
+// Animación al soltar la tarjeta
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-preview .task-card: Da estilo a la "copia" de la tarjeta que sigue al cursor del ratón. Le añade más sombra y una ligera rotación para que parezca que está "flotando".
+.cdk-drop-list-dragging .cdk-drag-placeholder .task-card: Estiliza el espacio que se reserva en la lista para indicar dónde caerá la tarjeta si la sueltas. Lo hace visible con un borde punteado, pero oculta su contenido (* { opacity: 0; }) para que solo se vea el contorno.
+.cdk-drag-animating: Define la animación suave que ves cuando sueltas la tarjeta y esta vuelve a su posición final en la lista.
+.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder): Aplica una transición suave a las otras tarjetas de la lista mientras se mueven para hacer espacio.
+
+
+*/

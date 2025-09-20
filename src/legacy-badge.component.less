@@ -1,0 +1,23 @@
+@base-padding: 4px 10px;
+@border-radius: 16px;
+
+.legacy-badge {
+  padding: @base-padding;
+  border-radius: @border-radius;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+
+  &.priority-low {
+    background-color: #4caf50; // Green
+  }
+
+  &.priority-medium {
+    background-color: #ff9800; // Orange
+  }
+
+  &.priority-high {
+    background-color: #f44336; // Red
+  }
+}

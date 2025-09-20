@@ -1,0 +1,75 @@
+$base-padding: 4px 10px;
+$border-radius: 16px;
+
+.legacy-badge {
+  padding: $base-padding;
+  border-radius: $border-radius;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+
+  &.priority-low {
+    background-color: #4caf50; // Green
+  }
+
+  &.priority-medium {
+    background-color: #ff9800; // Orange
+  }
+
+  &.priority-high {
+    background-color: #f44336; // Red
+  }
+}
+/*
+
+Este archivo de estilos SCSS define la apariencia de la insignia de prioridad, pero de una manera que, como su nombre "legacy" (heredado) sugiere, ya no está siendo utilizada por la versión actual de tu componente. Sin embargo, es muy útil para entender cómo se podría haber hecho.
+
+Aquí tienes un desglose de su funcionamiento:
+
+1. Variables SCSS
+scss
+$base-padding: 4px 10px;
+$border-radius: 16px;
+Estas líneas definen variables. $ es la sintaxis de SCSS para crear una variable.
+Su propósito es almacenar valores que se repiten (como el espaciado o el radio del borde) en un solo lugar. Si quisieras cambiar el espaciado de todas las insignias, solo tendrías que modificar la variable $base-padding, haciendo el código mucho más fácil de mantener.
+2. Clase Base (.legacy-badge)
+scss
+ Show full code block 
+.legacy-badge {
+  padding: $base-padding;
+  border-radius: $border-radius;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  // ...
+}
+Esta es la clase principal que define los estilos comunes para todas las insignias, sin importar su color.
+Utiliza las variables definidas anteriormente para el padding y el border-radius.
+Establece el tamaño de la fuente, el grosor, el color del texto (blanco) y lo pone en mayúsculas.
+3. Clases Modificadoras (Colores)
+scss
+ Show full code block 
+  &.priority-low {
+    background-color: #4caf50; // Green
+  }
+
+  &.priority-medium {
+    background-color: #ff9800; // Orange
+  }
+
+  &.priority-high {
+    background-color: #f44336; // Red
+  }
+El & es el selector padre en SCSS. Por lo tanto, &.priority-low se compila a .legacy-badge.priority-low.
+Estas son clases modificadoras. La idea era que, además de la clase base .legacy-badge, se añadiera una segunda clase para definir el color.
+Por ejemplo, un <span> con class="legacy-badge priority-high" tendría todos los estilos base y, además, un fondo de color rojo.
+Conclusión y Sugerencia de Limpieza
+Este archivo SCSS representa un enfoque de estilos que ha sido reemplazado por la implementación actual en legacy-badge.component.ts, que utiliza CSS Custom Properties (--badge-bg) y una regla global en styles.scss.
+
+Dado que este archivo y el archivo legacy-badge.component.less ya no están vinculados al componente y no se utilizan, te sugiero eliminarlos para limpiar el proyecto y evitar confusiones en el futuro.
+
+
+
+*/

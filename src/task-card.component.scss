@@ -1,0 +1,172 @@
+:host {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.task-card {
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: var(--mat-elevation-z1);
+  transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: grab;
+
+  &:hover {
+    box-shadow: var(--mat-elevation-z3);
+    transform: translateY(-2px);
+  }
+}
+
+.cdk-drag-placeholder {
+  .task-card {
+//    background-color: var(--mat-sys-surface-container-highest);
+    border-color: var(--mat-sys-primary);
+    border-style: dashed;
+    visibility: visible !important; // Sobrescribe el opacity: 0 del board.component
+    opacity: 1 !important;
+
+    * {
+      opacity: 0;
+    }
+  }
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+
+  h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+    line-height: 1.4;
+  }
+}
+
+.task-description {
+  margin: 0 0 12px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .task-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+
+    .tag {
+      color: var(--mat-sys-on-secondary-container);
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  }
+
+  .task-details {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.8rem;
+
+    .task-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    mat-icon {
+      font-size: 1rem;
+      height: 1rem;
+      width: 1rem;
+    }
+  }
+}
+
+/*
+Este archivo es el responsable de toda la apariencia visual de una tarjeta de tarea individual. Define cómo se ve la tarjeta en su estado normal, cuando pasas el ratón por encima, y cómo se comporta cuando la estás arrastrando por el tablero.
+
+Aquí tienes un desglose de cada sección:
+
+1. Estilo del Componente Anfitrión (:host)
+scss
+:host {
+  display: block;
+  margin-bottom: 12px;
+}
+:host es un selector especial de Angular que se refiere al propio elemento del componente (<app-task-card>).
+display: block;: Hace que el componente se comporte como un bloque, ocupando todo el ancho disponible y permitiendo que se le apliquen márgenes.
+margin-bottom: 12px;: Añade un espacio de 12 píxeles debajo de cada tarjeta para separarlas visualmente dentro de una columna.
+2. Estilo Base de la Tarjeta (.task-card)
+scss
+ Show full code block 
+.task-card {
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: var(--mat-elevation-z1);
+  transition: box-shadow 0.3s ..., transform 0.3s ...;
+  cursor: grab;
+
+  &:hover {
+    box-shadow: var(--mat-elevation-z3);
+    transform: translateY(-2px);
+  }
+}
+Esta es la clase principal que da forma a la tarjeta.
+Define los bordes redondeados (border-radius), el espaciado interno (padding), un borde sutil y una sombra inicial (box-shadow).
+cursor: grab;: Cambia el cursor a una "mano para agarrar", indicando que el elemento es arrastrable.
+transition: ...: Define una animación suave para la sombra y la posición.
+&:hover: Es un seudoselector de SCSS. Cuando pasas el ratón por encima de la tarjeta, la sombra se hace más pronunciada (var(--mat-elevation-z3)) y la tarjeta se eleva ligeramente (transform: translateY(-2px)), creando un efecto de "levantamiento" muy agradable.
+3. Estilos de Arrastrar y Soltar (CDK)
+Estas clases son añadidas automáticamente por el Angular CDK durante la interacción de arrastrar y soltar.
+
+scss
+ Show full code block 
+.cdk-drag-placeholder {
+  .task-card {
+    border-color: var(--mat-sys-primary);
+    border-style: dashed;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    * {
+      opacity: 0;
+    }
+  }
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drag-placeholder: Da estilo al "espacio vacío" que se queda en la lista para indicar dónde caerá la tarjeta si la sueltas.
+Le pone un borde punteado (dashed) del color primario.
+visibility: visible !important; y opacity: 1 !important; son cruciales para asegurar que este marcador de posición sea visible.
+* { opacity: 0; }: Oculta todo el contenido dentro del marcador de posición (título, descripción, etc.), de modo que solo se vea el contorno punteado.
+.cdk-drag-animating: Define la animación suave que ves cuando sueltas la tarjeta y esta viaja desde la posición del cursor hasta su lugar final en la lista.
+4. Estilos del Contenido de la Tarjeta
+scss
+.task-header { ... }
+.task-description { ... }
+.task-footer { ... }
+.task-header: Utiliza flexbox (display: flex, justify-content: space-between) para colocar el título (<h4>) a la izquierda y la insignia de prioridad a la derecha.
+.task-description: Da estilo al párrafo de la descripción, definiendo su color, tamaño de fuente y espaciado.
+.task-footer: También usa flexbox para alinear los dos grupos de elementos del pie de página: las etiquetas a la izquierda y los detalles (fecha, asignado) a la derecha.
+.task-tags .tag: Da estilo a cada etiqueta individual, definiendo su color de texto, espaciado interno y bordes redondeados.
+.task-details: Agrupa los iconos y el texto de los detalles, y .task-detail-item asegura que cada icono esté alineado con su texto.
+
+*/

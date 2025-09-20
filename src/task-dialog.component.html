@@ -1,0 +1,140 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Editar Tarea' : 'Nueva Tarea' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="taskForm" class="task-form" (ngSubmit)="onSave()">
+    <mat-form-field appearance="outline">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" required cdkFocusInitial>
+      @if (taskForm.get('title')?.hasError('required')) {
+        <mat-error>El título es obligatorio.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Prioridad</mat-label>
+        <mat-select formControlName="priority">
+          @for (priority of priorities; track priority) {
+            <mat-option [value]="priority">{{ priority }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Asignado a</mat-label>
+        <input matInput formControlName="assignedTo">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de Vencimiento</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Etiquetas</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Etiquetas de la tarea">
+        @for (tag of tags; track tag) {
+          <mat-chip-row (removed)="removeTag(tag)">
+            {{tag}}
+            <button matChipRemove [attr.aria-label]="'remover ' + tag">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input placeholder="Nueva etiqueta..."
+             [matChipInputFor]="chipGrid"
+             (matChipInputTokenEnd)="addTag($event)">
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="taskForm.invalid">
+    {{ isEditMode ? 'Guardar Cambios' : 'Crear Tarea' }}
+  </button>
+</mat-dialog-actions>
+
+<!--
+
+Aquí tienes un desglose de su funcionamiento, sección por sección:
+
+1. Estructura General del Diálogo
+html
+ Show full code block 
+<h2 mat-dialog-title>...</h2>
+<mat-dialog-content>
+  ...
+</mat-dialog-content>
+<mat-dialog-actions>
+  ...
+</mat-dialog-actions>
+El código sigue la estructura estándar de un diálogo de Angular Material:
+
+mat-dialog-title: Define el área del título, que se mantiene fija en la parte superior.
+mat-dialog-content: Es el contenedor principal para el contenido del diálogo, en este caso, el formulario. Esta área es desplazable (scrollable) si el contenido es demasiado largo.
+mat-dialog-actions: Es el contenedor para los botones de acción (como "Cancelar" y "Guardar"), que se mantiene fijo en la parte inferior.
+2. Título y Botones Dinámicos
+html
+<h2>{{ isEditMode ? 'Editar Tarea' : 'Nueva Tarea' }}</h2>
+...
+<button ...>
+  {{ isEditMode ? 'Guardar Cambios' : 'Crear Tarea' }}
+</button>
+Esta es una característica clave del componente. Utiliza una expresión ternaria (condición ? valor_si_verdadero : valor_si_falso) para cambiar el texto del título y del botón principal. Si la variable isEditMode (definida en el archivo TypeScript) es true, muestra "Editar Tarea" y "Guardar Cambios". Si es false, muestra "Nueva Tarea" y "Crear Tarea". Esto permite reutilizar la misma plantilla para dos propósitos diferentes.
+3. El Formulario (<form>)
+html
+<form [formGroup]="taskForm" class="task-form" (ngSubmit)="onSave()">
+  ...
+</form>
+[formGroup]="taskForm": Vincula este formulario HTML al FormGroup llamado taskForm que creaste en el archivo TypeScript. Esta es la base de los Formularios Reactivos de Angular.
+(ngSubmit)="onSave()": Define que cuando el formulario se envíe (por ejemplo, al presionar Enter en un campo), se ejecutará el método onSave() del componente.
+4. Campos del Formulario (mat-form-field)
+Cada campo del formulario está envuelto en un <mat-form-field>, que es un componente de Angular Material que se encarga del estilo, las etiquetas flotantes y los mensajes de error.
+
+Título:
+
+formControlName="title": Vincula este input al control title dentro de taskForm.
+required: Es una validación HTML5 que, junto con Validators.required en el TypeScript, asegura que el campo no puede estar vacío.
+cdkFocusInitial: Una directiva de accesibilidad del CDK que pone el foco del cursor en este campo automáticamente cuando se abre el diálogo.
+@if (taskForm.get('title')?.hasError('required')): Muestra un mensaje de error (<mat-error>) solo si el campo title tiene el error de "requerido".
+Descripción:
+
+cdkTextareaAutosize: Una directiva muy útil del CDK que hace que el textarea crezca y se encoja automáticamente para adaptarse al contenido que el usuario escribe.
+Prioridad y Asignado a:
+
+Están dentro de un div con la clase .form-row para colocarlos uno al lado del otro.
+Prioridad: Usa un <mat-select> (menú desplegable) que se llena con las opciones del array priorities usando un bucle @for.
+Fecha de Vencimiento:
+
+Usa un <input> conectado a un <mat-datepicker> (el calendario emergente).
+[matDatepicker]="picker": Vincula el input al calendario.
+<mat-datepicker-toggle>: Es el botón con el icono de calendario que abre el picker.
+Etiquetas (mat-chip-grid):
+
+Este es un componente avanzado para manejar listas de elementos como etiquetas.
+Un bucle @for muestra las etiquetas existentes como <mat-chip-row>.
+Cada chip tiene un botón de eliminar que llama a removeTag(tag).
+El <input> de abajo está conectado con [matChipInputFor]="chipGrid" y se usa para añadir nuevas etiquetas. El evento (matChipInputTokenEnd) se dispara cuando el usuario presiona Enter, llamando a addTag($event).
+5. Botones de Acción
+html
+ Show full code block 
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button ... (click)="onSave()" [disabled]="taskForm.invalid">
+    ...
+  </button>
+</mat-dialog-actions>
+align="end": Alinea los botones a la derecha.
+[disabled]="taskForm.invalid": Esta es una característica muy potente de los formularios reactivos. El botón de guardar/crear se deshabilita automáticamente si el taskForm no es válido (por ejemplo, si el título requerido está vacío), previniendo envíos de datos incompletos.
+
+
+-->

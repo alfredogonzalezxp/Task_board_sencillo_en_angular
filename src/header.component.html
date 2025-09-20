@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  <div class="flex items-center justify-between w-full px-4">
+    <div class="flex items-center gap-2 text-xl">
+      <mat-icon>task_alt</mat-icon>
+      <span>TaskBoard</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span>{{ currentUser().name }}</span>
+      @if (currentUser().avatar; as avatar) {
+        <img class="w-10 h-10 rounded-full" [src]="avatar" alt="User Avatar" />
+      }
+      <button mat-icon-button><mat-icon>logout</mat-icon></button>
+    </div>
+  </div>
+</mat-toolbar>

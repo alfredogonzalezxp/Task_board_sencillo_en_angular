@@ -1,0 +1,81 @@
+<div class="task-card">
+  <div class="task-header">
+    <h4>{{ task.title }}</h4>
+    <app-legacy-badge [priority]="task.priority"></app-legacy-badge>
+  </div>
+
+  <p class="task-description">{{ task.description }}</p>
+
+  <div class="task-footer">
+    <div class="task-tags">
+      @for (tag of task.tags; track tag) {
+      <span class="tag">{{ tag }}</span>
+      }
+    </div>
+
+    <div class="task-details">
+      @if (task.dueDate) {
+      <div class="task-detail-item">
+        <mat-icon>event</mat-icon>
+        <span>{{ task.dueDate | date: 'shortDate' }}</span>
+      </div>
+      }
+      @if (task.assignedTo) {
+      <mat-icon>account_circle</mat-icon>
+      }
+    </div>
+  </div>
+</div>
+
+<!--
+Aquí tienes un desglose detallado de lo que hace cada parte:
+
+1. Contenedor Principal
+html
+<div class="task-card">
+  ...
+</div>
+Este div es el contenedor principal de toda la tarjeta. La clase .task-card se usa en tu archivo SCSS para darle el estilo base (bordes, sombra, espaciado, etc.).
+2. Encabezado de la Tarjeta
+html
+<div class="task-header">
+  <h4>{{ task.title }}</h4>
+  <app-legacy-badge [priority]="task.priority"></app-legacy-badge>
+</div>
+<h4>{{ task.title }}</h4>: Muestra el título de la tarea. La sintaxis de doble llave {{ }} es la interpolación de Angular, que inserta el valor de la propiedad task.title directamente en el HTML.
+<app-legacy-badge ...>: Aquí se utiliza el componente hijo LegacyBadgeComponent.
+[priority]="task.priority": Esto es un enlace de propiedad (property binding). Le está pasando el valor de la propiedad priority de la tarea actual al @Input() priority del componente de la insignia, para que este sepa qué color y texto mostrar.
+3. Descripción de la Tarea
+html
+<p class="task-description">{{ task.description }}</p>
+Un párrafo simple que muestra la descripción de la tarea, también usando la interpolación de Angular.
+4. Pie de la Tarjeta
+html
+
+Este div agrupa la información secundaria en la parte inferior de la tarjeta.
+4.1. Etiquetas (Tags)
+html
+<div class="task-tags">
+  @for (tag of task.tags; track tag) {
+    <span class="tag">{{ tag }}</span>
+  }
+</div>
+@for (tag of task.tags; ...): Este es el nuevo bloque de control de flujo @for de Angular. Itera sobre el array tags del objeto task.
+<span class="tag">{{ tag }}</span>: Por cada etiqueta en el array, crea un <span> para mostrarla.
+4.2. Detalles (Fecha y Asignado)
+html
+ Show full code block 
+<div class="task-details">
+  @if (task.dueDate) {
+    ...
+  }
+  @if (task.assignedTo) {
+    ...
+  }
+</div>
+@if (task.dueDate): Este es el bloque condicional @if de Angular. El contenido dentro de las llaves solo se renderizará si la propiedad task.dueDate existe (no es nula ni indefinida).
+{{ task.dueDate | date: 'shortDate' }}: Muestra la fecha de vencimiento. El | date: 'shortDate' es un pipe de Angular que formatea el objeto Date a un formato más legible (ej. "6/15/24").
+@if (task.assignedTo): De manera similar, solo muestra el icono de usuario si la tarea tiene a alguien asignado.
+
+
+-->
