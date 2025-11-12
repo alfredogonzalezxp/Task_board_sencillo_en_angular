@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+ import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Task } from './task.model';
 
@@ -8,7 +8,13 @@ import { Task } from './task.model';
 export class TaskService {
   private readonly STORAGE_KEY = 'taskboard_tasks';
   private storage: Storage;
-
+/*
+When the application starts for the very first time, the
+initial task information comes from a hardcoded array of
+tasks inside the seedInitialData() method in your
+TaskService.
+*/
+ 
   constructor() {
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       this.storage = localStorage;
@@ -40,30 +46,148 @@ export class TaskService {
     return [];
   }
 
-  private saveTasksToStorage(tasks: Task[]): void {
+ /*
+  The line effectively says: "Go to the browser's local 
+  storage, find the item stored under the key 'taskboard_tasks'
+  , and put its value into a new variable called tasksJson."
+
+const tasksJson = this.storage.getItem(this.STORAGE_KEY);  
+
+Think of localStorage as a small, persistent filing cabinet
+built directly into the user's web browser. The data you save
+there will remain even if the user closes the browser tab and
+opens it again later.
+  
+The data is placed into localStorage by the 
+saveTasksToStorage method in your task.service.ts file.
+
+// in c:\Users\Alfrredo\Documents\Angular\TaskBoard\src\
+// task.service.ts
+private saveTasksToStorage(tasks: Task[]): void {
+  this.storage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));}
+
+1. Where the Data is Saved (Written To Storage)
+The data is placed into localStorage by the saveTasksToStorage
+method in your task.service.ts file.
+
+this.storage.setItem(...): This is the command that says "save
+this data". It takes the current array of Task objects,
+converts it into a JSON string (JSON.stringify(tasks)),
+and stores that string in localStorage under the key
+'taskboard_tasks'
+
+ method is called whenever you make a change to the tasks, such as:
+
+When the application first loads (seedInitialData).
+When you add a new task (addTask).
+When you update a task, like dragging it to a new column 
+(updateTask).
+When you delete a task (deleteTask).
+    
+  */
+/*
+TIP
+While the application is running, it doesn't read from
+localStorage every time it needs to display a task. Instead,
+it loads the data from localStorage once and keeps it in
+memory for fast access.
+
+*/
+
+
+
+
+  /*
+  Reading Tasks (getTasksFromStorage): When the
+  application loads, this method is called to
+  retrieve the saved tasks. It reads the JSON 
+  string from localStorage and converts it back 
+  into an array of Task objects.
+  
+ Using localStorage ensures that if you add a task,
+ close the browser tab, and open it again, your
+ tasks will still be there.
+*/
+
+/*
+ The function above return a
+ tasks object, the first time return null
+
+ export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'Low' | 'Medium' | 'High';
+  tags: string[];
+  dueDate?: Date; // Optional Date object
+  assignedTo?: string;
+  column: 'To Do' | 'In Progress' | 'Done';
+}
+This is in taskmodel.ts
+
+Now storage is
+The purpose of the storage property is to persist
+your task data. It acts as a simple, local database
+for your task board application.
+
+Saving Tasks (saveTasksToStorage): When you add,
+update, or delete a task, this method is called. 
+It takes the array of tasks, converts it to a JSON
+string using JSON.stringify(), and saves it to 
+localStorage under the key 'taskboard_tasks'.
+
+Look at this
+private saveTasksToStorage(tasks: Task[]): void {
     this.storage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));
   }
+*/
 
+private saveTasksToStorage(tasks: Task[]): void {
+    this.storage.setItem(this.STORAGE_KEY, JSON.stringify(tasks));
+  }
+/*
+Here, you use this.STORAGE_KEY to tell setItem what to name
+the data you are saving. This is how the tasks are saved
+under the name 'taskboard_tasks'.
+*/
+  
   private seedInitialData(): void {
     if (!this.storage.getItem(this.STORAGE_KEY)) {
+      // Si no hay información con el label de 'taskboard_tasks'
+     //Entonces se cargan los datos 
       const initialTasks: Task[] = [
         { id: '1', title: 'Diseñar UI para el login', description: 'Crear mockups en Figma', priority: 'High', tags: ['UI', 'Diseño'], column: 'To Do', assignedTo: 'Alfredo' },
         { id: '2', title: 'Implementar Drag & Drop', description: 'Usar Angular CDK', priority: 'Medium', tags: ['Frontend', 'Angular'], column: 'In Progress', assignedTo: 'Alfredo', dueDate: new Date() },
         { id: '3', title: 'Configurar CI/CD', description: 'Pipeline en GitHub Actions', priority: 'Low', tags: ['DevOps'], column: 'Done', assignedTo: 'Alfredo' },
       ];
       this.saveTasksToStorage(initialTasks);
+      //Data is Saved: The initialTasks array is saved to the browser's localStorage.
+      //Se guarda en saveTasksToStorage con el KEY de STORAGE_KEY.
     }
   }
+/*
+BoardComponent Loads: Finally, your BoardComponent loads, 
+calls this.taskService.getTasks(), which now reads this
+initial data from localStorage.
+*/
 
   getTasks(): Task[] {
     return this.getTasksFromStorage();
   }
-
+  //Llamada desde boardcomponent.ts
+// getTaskById llamada a  esta función recibe id:string y
+//regresa o task o undefined
   getTaskById(id: string): Task | undefined {
     const tasks = this.getTasksFromStorage();
+    // Toma las tasks del localstorage
     return tasks.find(task => task.id === id);
+    //Regresa el task que sea igual a id
   }
-
+/*
+"To add a new task, give me all its details, but you are
+ NOT allowed to give me an id or a column. I will handle
+ those myself."
+*/
   addTask(task: Omit<Task, 'id' | 'column'>): void {
     const tasks = this.getTasksFromStorage();
     const newTask: Task = {
@@ -86,7 +210,11 @@ export class TaskService {
 
   deleteTask(id: string): void {
     let tasks = this.getTasksFromStorage();
+  //"Get the current list of all tasks from storage and put
+  //  it into a temporary variable named tasks."
     tasks = tasks.filter(task => task.id !== id);
+  // Toma todas las tasks sin el id de borrar y guardalas
+  // de nuevo
     this.saveTasksToStorage(tasks);
   }
 }
@@ -140,6 +268,4 @@ deleteTask(id):
 Recibe el ID de una tarea a eliminar.
 Usa el método filter para crear un nuevo array que excluye la tarea con ese ID.
 Guarda este nuevo array (sin la tarea eliminada)
-
-
 */

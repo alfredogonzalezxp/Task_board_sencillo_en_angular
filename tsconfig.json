@@ -8,7 +8,12 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@components/*": ["app/components/*"]
+    },
+    "skipLibCheck": true, 
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,

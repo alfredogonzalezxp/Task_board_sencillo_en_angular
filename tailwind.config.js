@@ -1,10 +1,14 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ['./src/**/*.{html,ts}'], // MUY importante incluir .html y .ts
+export default {
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    './public/**/*.html',
+  ],
   theme: {
-    extend: {},
-    // Asegura breakpoints por defecto:
-    screens: { sm:'640px', md:'768px', lg:'1024px', xl:'1280px', '2xl':'1536px' },
+    extend: {
+      // Aquí puedes añadir tus personalizaciones sin sobreescribir el tema base.
+    },
   },
   plugins: [],
 };
